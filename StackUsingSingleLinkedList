@@ -1,0 +1,131 @@
+
+
+//=================STACK BANG DANH SACH LIEN KET==========
+#include<iostream>
+#include<conio.h>
+#include<string.h>
+#define max 10
+using namespace std;
+struct Node {
+	int data;
+	Node* next;
+};
+void Push(Node* s, int value)
+{
+	Node* node = new Node;
+	if (node == NULL)exit(1); // kh duoc cap phat bo nho
+
+	node->data = value;
+	node->next = Top;
+	Top = node;
+
+}
+void Pop(Node* s)
+{
+	if (s == NULL)
+	{
+		cout << "\nStack rong, khong the Pop.";
+	}
+	else {
+		Node* temp;
+		temp = s;
+		s = s->next;
+		temp->next = NULL;
+		delete temp;
+	}
+}
+void Show_Stack(Node s)
+{
+	if (s == NULL)
+	{
+		cout << "\nStack rong!";
+
+	}
+	cout<<"\nStack chua cac gia tri sau :"
+	while(s!=NULL)
+	{
+		cout<<s->data<<" ";
+		s=s->next;
+	}
+}
+void menu()
+{
+	Node a;
+	char luachon;
+	do
+	{
+		system("cls");
+		cout << "\n\t\t====================MENU======================";
+		cout << "\n\t\t1. Push.";
+		cout << "\n\t\t2. Pop";
+		cout << "\n\t\t3. Show .";
+		cout << "\n\t\t0. Thoat." << endl;
+		cout << "\n\t\t==============================================";
+		cout << "\nNhap lua chon : ";
+		fflush(stdin);
+		luachon = getch();
+		while (luachon < '0' || luachon>'4')
+		{
+			cout << "\nNhap sai, moi nhap lai :";
+			fflush(stdin);
+			luachon = getch();
+			system("pause");
+		}
+		switch (luachon)
+		{
+		case '0': {
+			exit(1);
+		}
+				// case 1 : Push
+		case '1':
+		{
+			system("cls");
+			int value;
+			cout << "\nNhap gia tri muon Push :"; cin >> value;
+			Push(a, value);
+			char tt;
+			do {
+				system("cls");
+				cout << "\nPhim bat ky de tiep tuc Push" << "\nPhim 0 de thoat"; fflush(stdin);
+				tt = getch();
+				if (tt == '0')break;
+				cout << "\nNhap gia tri muon Push :"; cin>>value;
+				Push(a, value);
+			} while (true);
+			break;
+		}
+		case '2':
+		{
+			system("cls");
+			Pop(a);
+			char tt;
+			do {
+				cout << "\nPhim bat ky de tiep tuc Pop" << "\nPhim 0 de thoat"; fflush(stdin);
+				tt = getch();
+				if (tt == '0')break;
+				Pop(a);
+			} while (true);
+			break;
+		}
+		case '3':
+		{
+			system("cls");
+			char tt;
+			Show_Stack(a);
+			cout << "\nPhim bat ky de ve MENU ?" << "\nPhim 0 de Thoat Chuong Trinh "; fflush(stdin);
+			tt = getch();
+			if (tt == '0')exit(1);
+			break;
+		}
+		} 
+	} while (true);
+}
+int main()
+{
+	while (true)
+	{
+		menu();
+		getch();
+	}
+	return 0;
+}
