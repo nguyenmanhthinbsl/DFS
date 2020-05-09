@@ -1,0 +1,139 @@
+#include <iostream>
+#include<stdio.h>
+#include<stdio.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+struct Queue {
+    Node* front;
+    Node* rear;
+};
+
+// khoi tao queue 
+
+void Init(Queue& q) {
+    q.front = q.rear = NULL;
+}
+
+// kiem tra stack co rong khong
+
+bool isEmpty(Queue& q) {
+    if (q.front == NULL) return true;
+    else return false;
+}
+
+// tao Node
+Node* creat_Node(int x) {
+    Node* temp = new Node;
+    if (temp == NULL)exit(1);// khong duoc cap phat bo nho 
+    if (temp != NULL)
+    {
+        temp->data = x;
+        temp->next = NULL;
+    }
+    return temp;
+}
+
+// Push vao stack
+
+void push(Queue& q, int x) {
+    Node* temp = creat_Node(x);
+    if (isEmpty(q))
+    {
+        q.front = q.rear = temp; // neu queue rong thi ta gan p la phan tu dau va ca cuoi
+    }
+    else
+    {
+        q.rear->next = temp; // cho phan tu ke tiep bang phan tu dau
+        q.rear = temp; // cap nhat phan tu dau la phan tu moi them vao
+    }
+}
+
+// Pop phan tu ra khoi Queue
+
+void pop(Queue& q)
+{
+    Node* temp = new Node;
+    if (!isEmpty(q))
+    {
+        temp = q.front;
+        q.front = q.front->next;
+        delete temp;   // xoa Node front
+    }
+    else
+    {
+        cout << "\nQueue rong, khong the Pop ";
+    }
+}
+
+// Nhap du lieu cho Queue
+void enQueue(Queue& q) {
+    int n;
+    cout << "\nNhap so luong ptu ban dau: "; cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        int x;
+        cout << "Phan tu " << i << ": ";
+        cin >> x;
+        push(q, x);// push x vao Queue
+    }
+}
+
+// xuat cac phan tu trong Queue theo co che FIFO
+void deQueue(Queue& q) {
+    Node* temp = new Node;
+    temp = q.front;
+    while (temp != NULL) {
+        cout << " " << temp->data;
+        temp = temp->next;
+    }
+}
+
+int main() {
+    Queue q;
+    Init(q);
+    enQueue(q);
+    deQueue(q);
+    int luachon, x;
+    do {
+        cout << "\n========MENU=========";
+        cout << endl;
+        cout <<"\n 1.Push Queue"    
+            << "\n 2.Pop Queue"
+            << "\n 0.Thoat"
+            << "\n=====================";
+        cout << "\nNhap lua chon: ";
+        cin >> luachon;
+        while (luachon < 0 || luachon>3)
+        {
+            cout << "\nYeu cau khong hop le, moi nhap lai :";
+            cin >> luachon;
+        }
+        switch (luachon) {
+        case 1:
+        {
+            cout << "Nhap phan tu can Push: ";
+            cin >> x;
+            push(q, x);
+            break;
+        }
+        case 2:
+        {
+            cout << "Pop phan tu trong Queue ";
+            pop(q);
+            cout << "\n";
+            break;
+        }
+        case 0: break;
+        }
+        cout << "\n=====================";
+        cout << "\nQueue Hien Tai :";
+        deQueue(q);
+
+    } while (luachon != 0);
+    return 0;
+}
