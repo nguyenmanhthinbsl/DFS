@@ -1,0 +1,161 @@
+#include<iostream>
+#define max 30
+using namespace std;
+struct NODE
+{
+    int data;
+    NODE* pLeft;
+    NODE* pRight;
+};
+NODE* CreateNode(int x)
+{
+    NODE* p = new NODE();
+    p->data = x;
+    p->pLeft = p->pRight = NULL;
+    return p;
+}
+// ham dieu huong 
+NODE* FindInsert(NODE* root, int x)
+{
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    NODE* p = root;// root la node goc cua cay nen k sd de duyet
+    NODE* f = p; // sd node f =p thay the de duyet -> k anh huong den node root 
+    while (p != NULL)
+    {
+        f = p;
+        if (p->data > x) // x < root 
+        {
+            p = p->pLeft; // dieu huong sang trai 
+        }
+        else
+        {
+            p = p->pRight; // dieu huong sang phai
+        }
+    }        
+    return f;
+}
+// chen node vao tree 
+void InsertNode(NODE* &root, int x)
+{
+    NODE* n = CreateNode(x);
+    if (root == NULL)
+    {
+        root = n;
+        return;
+    }
+    else
+    {
+        NODE* f = FindInsert(root, x);
+        if (f != NULL)
+        {
+            if (f->data > x)
+            {
+                f->pLeft = n;
+            }
+            else
+            {
+                f->pRight = n;
+            }
+        }
+    }
+}
+// ham tao cay 
+void CreateTree(NODE* &root, int a[], int n)
+{
+    for (int i = 1; i <= n; i++)
+    {
+        InsertNode(root, a[i]);
+    }
+}
+// duyet thu tu Left-Node-Right
+void LNR(NODE* root)
+{
+	if (root != NULL)
+	{
+		LNR(root->pLeft); // de qui ben trai
+		cout<< root->data<<" ";
+		LNR(root->pRight); // de qui ben phai 
+	}
+}
+
+// ngoai ra con 5 cach duyet khac : NRL, NLR ,LRN , RNL, RLN 
+
+// duyet thu tu Node-Left-Right
+void NLR(NODE* root)
+{
+	if (root != NULL)
+	{
+		cout<< root->data<<" ";
+		NLR(root->pLeft); // de qui ben trai
+		NLR(root->pRight); // de qui ben phai 
+	}
+}
+// duyet thu tu Node-Right-Left
+void NRL(NODE* root)
+{
+	if (root != NULL)
+	{
+		cout<< root->data<<" ";
+		NRL(root->pRight); // de qui ben phai 
+		NRL(root->pLeft); // de qui ben trai
+	}
+}
+
+
+// duyet thu tu Left-Right-Node
+void LRN(NODE* root)
+{
+	if (root != NULL)
+	{
+		LRN(root->pLeft); // de qui ben trai
+		LRN(root->pRight); // de qui ben phai 
+		cout<< root->data<<" ";
+	}
+}
+// duyet thu tu Right-Node-Left
+void RNL(NODE* root)
+{
+	if (root != NULL)
+	{
+		RNL(root->pRight); // de qui ben phai 
+		cout<< root->data<<" ";
+		RNL(root->pLeft); // de qui ben trai
+	
+	}
+}
+// duyet thu tu Right-Left-Node
+void RLN(NODE* root)
+{
+	if (root != NULL)
+	{
+		RLN(root->pRight); // de qui ben phai 
+		RLN(root->pLeft); // de qui ben trai
+		cout<< root->data<<" ";
+	}
+}
+int main()
+{
+	NODE* root = NULL;
+	int arr[max];
+	int n;
+	cout<<"\nNhap so phan tu : ";
+	cin>>n;
+	cout<<"\nNhap ptu cua day : ";
+	for(int i =1;i<=n;i++)
+	{
+		cout<<"\nPhan tu thu "<<i<<" ";
+		cin>>arr[i];
+	}
+	CreateTree(root, arr, n);
+	cout<<"\nCay sau khi duyet theo thu tu  Left -> Node -> Right la :";
+	   LNR(root);
+	// NLR(root);
+	// NRL(root);
+	// LRN(root);
+	// RNL(root;
+	// RLN(root);
+	return 0;
+}
