@@ -1,0 +1,397 @@
+#define _CRT_NONSTDC_NO_WARNINGS//
+#define _CRT_SECURE_NO_WARNINGS // sua loi khi tao project thieu SDL check - C4996 
+/* 1. Nhập vào danh sách khoa( mã khoa, tên khoa)
+   2. Nhập vào danh sách sinh viên ( tên, mã sinh viên , mã khoa)
+   - chú ý : Nếu mã khoa không tồn tại thì báo lỗi
+             Mã sinh viên nhập chữ thì báo lỗi
+             Nhập mã sv, mã khoa đã trùng thì thông báo đã trùng
+   3.Tìm những sinh viên cùng một khoa do người dùng nhập vào, xuất ra thông tin đó.
+   4.Sắp xếp sinh viên theo thứ tự tăng dần của từng khoa . */
+#include<iostream>
+#include<conio.h>
+#include<cstring>
+#define max 50 
+using namespace std;
+// khai bao struc khoa
+typedef struct Khoa {
+    char makhoa[max];
+    char tenkhoa[max];
+}Khoa;
+//khai bao struct sinh vien
+typedef struct Sinhvien {
+    char tensv[max];
+    char masv[max];
+    char makhoa[max];
+}Sinhvien;
+// tao node khoa
+typedef struct Nodekhoa {
+    Khoa data;
+    Nodekhoa* next;
+}Nodekhoa;
+// tao node sinh vien
+typedef struct Nodesinhvien {
+    Sinhvien data;
+    Nodesinhvien* next;
+}Nodesinhvien;
+// danh sach khoa 
+struct Listkhoa
+{
+    Nodekhoa* kHead;
+    Nodekhoa* kTail;
+};
+// danh sach sinh vien 
+struct Listsinhvien {
+    Nodesinhvien* sHead;
+    Nodesinhvien* sTail;
+};
+// khoi tao ds khoa
+void Initkhoa(Listkhoa& L)
+{
+    L.kHead = L.kTail = NULL;
+}
+// khoi tao ds sv
+void Initsinhvien(Listsinhvien& L)
+{
+    L.sHead = L.sTail = NULL;
+}
+// them 1 node khoa vao dslk 
+Nodekhoa* creKhoa(Khoa x)
+{
+    Nodekhoa* p = new Nodekhoa;
+    if (p == NULL) exit(1); // nếu không được cấp phát bộ nhớ thì thoát 
+    p->data = x;
+    p->next = NULL;
+    return p;
+}
+//  them 1 node sv vao dslk
+Nodesinhvien* creSinhvien(Sinhvien x)
+{
+    Nodesinhvien* p = new Nodesinhvien;
+    if (p == NULL)exit(1);
+    p->data = x;
+    p->next = NULL;
+    return p;
+}
+// them khoa vào đầu danh sach 
+void addkhoaHead(Listkhoa& L, Nodekhoa* x)
+{
+    if (L.kHead == NULL)
+    {
+        L.kHead = L.kTail = x;
+    }
+    else {
+        x->next = L.kHead; // tao lien ket từ x đến kHead
+        L.kHead = x; // gán x là kHead;
+    }
+    
+}
+// them sinh vien vào đầu danh sach 
+void addsvHead(Listsinhvien& L, Nodesinhvien* x)
+{
+    if (L.sHead == NULL)
+    {
+        L.sHead = L.sTail = x;
+    }
+    else {
+        x->next = L.sHead;
+        L.sHead = x;
+    }
+    
+}
+// kiem tra dieu kien cua ma khoa 
+bool checkmakhoa(char makhoa[]) {
+    if (strlen(makhoa) == 0 || strlen(makhoa) > max) // kiem tra dieu kien khi khong nhap hoac khi nhap qua sl chu cai
+    return false;
+    return true;
+}
+
+// so sanh 2 chuoi 
+bool sosanhbang(char x[], char y[])
+{
+    if (strlen(x) != strlen(y))return false; // khac dộ dài chuỗi => false
+
+    for (size_t i = 1; i <= strlen(x); i++)
+    {
+        if (x[i] != y[i]) return false;// khác phần tử cùng vị trí => false ;
+    }
+    return true; // bang nhau 
+}
+// ham kiem tra su ton tai cua khoa 
+bool checkKhoatontai(char makhoa[], Listkhoa Lk) {
+    for (Nodekhoa* a = Lk.kHead; a != NULL; a = a->next) {
+        if (sosanhbang(a->data.makhoa, makhoa)==true) return false;  //Khoa da ton tai
+    }
+    return true; //Khoa chua ton tai
+}
+// ham nhap vao Khoa va kiem tra dieu kien 
+void inputkhoa(Khoa& x, Listkhoa l) {
+    cout << "Nhap Ma Khoa: ";
+    fflush(stdin);
+    cin.getline(x.makhoa,max);
+    while (checkmakhoa(x.makhoa) == false || checkKhoatontai(x.makhoa, l) == false) {
+        if (checkmakhoa(x.makhoa) == false) {
+            cout << "\nBan da bo qua hoac nhap qua so luong ky tu.";
+            cout << "\nMoi nhap lai : ";
+            fflush(stdin);
+            cin.getline(x.makhoa, max);
+        }
+        if (checkKhoatontai(x.makhoa, l) == false) {
+            cout << "Ma Khoa Da Ton Tai.\n";
+            cout << "Nhap Lai Ma Khoa: ";
+            fflush(stdin);
+            cin.getline(x.makhoa, max);
+        }
+    }
+    cout << "Nhap Ten Khoa: ";
+    fflush(stdin);
+    cin.getline(x.tenkhoa, max);
+}
+// ham kiem tra dau vao masv 
+bool checkmasv(Sinhvien& n)// báo lỗi nếu mã sv có chữ 
+{
+    size_t i = 0;
+    while ( i <= strlen(n.masv))
+    {
+        if (n.masv[i]>='a' && n.masv[i] <= 'z'|| n.masv[i] >= 'A' && n.masv[i] <= 'Z' )
+        {
+            return false;
+        }
+        i++;
+    }
+    // neu dem =0 tức chuỗi chỉ có số ;
+        return true;
+}
+// ham check 1 sinh vien da co trong ds hay chua bang masv 
+bool checktontaisinhvien(char masv[], Listsinhvien l) {
+    for (Nodesinhvien* x = l.sHead; x != NULL; x = x->next) {
+        if (sosanhbang(masv, x->data.masv)==true) return false; // msv da ton tai
+    }
+    return true; // masv chua ton tai
+}
+// nhap vao sinh vien va kiem tra dieu kien 
+void inputsinhvien(Sinhvien& x, Listkhoa Lk, Listsinhvien Lsv) {
+    if (Lk.kHead == NULL) {
+        cout << "\nBan phai nhap vao Khoa truoc."; exit(1);
+    }
+    else {
+        cout << "Nhap Ma Sinh Vien: ";
+        fflush(stdin);
+        cin.getline(x.masv, max);
+        while (checkmasv(x) == false || checktontaisinhvien(x.masv, Lsv) == false ) {
+            if (checkmasv(x) == false) { // kiem tra nhap ma sv dung yeu cau hay chua 
+                cout << "\nMa Sinh vien chi dc nhap so";
+                cout << "\nMoi nhap lai: ";
+                fflush(stdin);
+                cin.getline(x.masv, max);
+            }
+            if (checktontaisinhvien(x.masv, Lsv) == false) {//kiem tra  masv vua nhap da ton tai trong ds hay chua 
+                cout << "\nMa sinh vien nay da ton tai."; 
+                cout << "\nMoi nhap lai : ";
+                fflush(stdin);
+                cin.getline(x.masv, max);
+            }
+            break;
+           
+        }
+        cout << "\nHo va ten : ";
+        fflush(stdin);
+        cin.getline(x.tensv, max);
+        cout << "\nNhap Ma Khoa: ";
+        fflush(stdin);
+        cin.getline(x.makhoa, max);
+        while (checkKhoatontai(x.makhoa, Lk) == true) { // kiem tra ma khoa nay da ton tai hay khong
+            cout << "\nMa khoa cua sinh vien khong ton tai .";
+            fflush(stdin);
+            cout << "\nNhap lai :";
+            cin.getline(x.makhoa, max);
+        }      
+    }
+}
+// xuat 1 sinh vien 
+void outputsv(Nodesinhvien* sv) {
+    cout << "\nMa sinh vien : " << sv->data.masv 
+    << "\tHo va ten    : " << sv->data.tensv 
+    << "\tMa Khoa      : " << sv->data.makhoa << endl;
+}
+// xuat 1 khoa 
+void outputkhoa(Nodekhoa* k) {
+    cout << "\nMa Khoa  : " << k->data.makhoa << 
+     "\tTen Khoa : " << k->data.tenkhoa << endl;
+}
+// xuat  List sinh vien
+void outputListsv(Listsinhvien l) {
+    int dem = 1;
+    for (Nodesinhvien* a = l.sHead; a != NULL; a = a->next) {
+        cout << "\nThong Tin Sinh Vien Thu " << dem << ": " << endl;
+        outputsv(a);
+        dem++;
+    }
+}
+//xuat List tat ca cac Khoa 
+void outputListkhoa(Listkhoa l) {
+    int dem = 1;
+    for (Nodekhoa* a = l.kHead; a != NULL; a = a->next) {
+        cout << "\nThong Tin Khoa Thu " << dem << ": " << endl;
+        outputkhoa(a);
+        dem++;
+    }
+}
+// ham tim sinh vien cung 1 khoa
+void timsv1khoa(Listsinhvien Ls, char makhoa[], Listkhoa Lk) {
+    int dem = 1;
+    if (checkKhoatontai(makhoa, Lk) == true) {
+        cout << "Ma Khoa Khong Ton Tai.\n";
+    }
+    else {
+        for (Nodesinhvien* a = Ls.sHead; a != NULL; a = a->next) {
+            if (sosanhbang(makhoa, a->data.makhoa)) {
+                cout << "Thong Tin Sinh Vien Thu " << dem << ": \n";
+                outputsv(a);
+                dem++;
+            };
+        }
+    }
+}
+// ham doi cho 2 Nodesinhvien
+void swapsv(Nodesinhvien* x, Nodesinhvien* y) {
+    Sinhvien temp = x->data;
+    x->data = y->data;
+    y->data = temp;
+}
+// so sanh 2 chuoi, tra ve true neu a > b, false neu a < b
+bool sosanhhon(char a[], char b[]) {
+    for (size_t i = 0; i < strlen(a); i++) {
+        if (a[i] > b[i]) return true;
+        if (a[i] < b[i]) return false;
+    }
+}
+// sap xep sinh vien cung 1 khoa theo thu tu tang dan cua ma sv 
+void sapxepsvcungKhoa(Listsinhvien& l) { // BubbleSort 
+    for (Nodesinhvien* i = l.sHead; i != NULL; i = i->next) {// vòng for chạy từ ptu Head den het ds, buoc nhay den ptu next
+        for (Nodesinhvien* j = i->next; j != NULL; j = j->next) {
+             if (sosanhhon(j->data.masv, i->data.masv) == true) {
+                 swap(i, j);
+             }        
+        }
+    }
+}
+void menu() {
+    Listsinhvien lsv;Initsinhvien(lsv);
+    Listkhoa lk;Initkhoa(lk);
+    char luachon;
+    do {
+        system("cls");
+            cout << "\n\t\t====================MENU======================";
+            cout << "\n\t\t1. Nhap Danh Sach Khoa.";
+            cout << "\n\t\t2. Nhap Danh Sach Sinh Vien.";
+            cout << "\n\t\t3. Xuat Danh Sach Khoa.";
+            cout << "\n\t\t4. Xuat Danh Sach Sinh Vien."; 
+            cout << "\n\t\t5. Sap Xep Sinh Vien Theo Thu Tu Tang Dan Cua Tung Khoa.";
+            cout << "\n\t\t6. Tim Sinh Vien Thuoc Mot Khoa Do Nguoi Dung Nhap Vao.";
+            cout << "\n\t\t0.thoat."<<endl;   
+            cout << "\nNhap lua chon : ";
+
+        luachon = getch();
+        while (luachon < '0' || luachon>'6') {
+            cout << "\nNhap Sai.\n";
+            cout << "Nhap Lai: \n";
+            luachon = getch();
+        }
+        switch (luachon) {
+        case '0': {
+            exit(1);
+        }
+            // case 1 : Nhap Danh Sach Khoa
+        case '1': {
+            system("cls");
+            Khoa k;
+            char tt;
+            inputkhoa(k, lk);
+            addkhoaHead(lk, creKhoa(k));
+            do {
+                cout << "\nPhim bat ky de them Khoa.";
+                cout << "\nPhim 0 de ve MENU.";
+                cout << "\nNhap lua chon : "; fflush(stdin);
+                tt = getch();
+                system("cls");
+                if (tt == '0') break;
+                else {
+                    inputkhoa(k, lk);
+                    addkhoaHead(lk, creKhoa(k));
+                }
+            } while (true);
+              break;
+        }
+                // case 2 : Nhap Danh Sach Sinh Vien
+        case '2': {
+            system("cls");
+            Sinhvien sv;
+            char tt;
+            inputsinhvien(sv, lk, lsv);
+            addsvHead(lsv, creSinhvien(sv));
+            do {
+                cout << "\nPhim bat ky de them sinh vien.";
+                cout << "\nPhim 0 de ve MENU.";
+                cout << "\nNhap lua chon : ";
+                tt = getch();
+                system("cls");
+                if (tt == '0') break;
+                inputsinhvien(sv, lk, lsv);
+                addsvHead(lsv, creSinhvien(sv));
+            } while (true);
+            break;
+        }
+ 
+                // case 3 : xuat danh sach khoa 
+        case '3': {
+            system("cls");
+            for (Nodekhoa* i = lk.kHead; i != NULL; i = i->next) {
+                outputkhoa(i);   
+            }
+            cout << "\nPhim bat ky de ve MENU";
+            getch();
+            break;
+        }
+                // case 4 : xuat danh sach sinh vien 
+        case '4': {
+            system("cls");
+            for (Nodesinhvien* i = lsv.sHead; i != NULL; i = i->next) {
+                outputsv(i);
+            }
+            cout << "\nPhim bat ky de ve MENU";
+            getch();
+            break;
+        }
+                // case 5 : Sap Xep Sinh Vien Theo Thu Tu Tang Dan Cua Tung Khoa
+        case '5': {
+            system("cls");
+            sapxepsvcungKhoa(lsv);
+            cout << "\nDanh Sach Da Duoc Sap Xep." << " Tro ve MENU - chon 4 de xem dssv .";
+            cout << "\nPhim bat ky de ve MENU.";
+            getch();
+            break;
+        }
+                // case 6 : Tim Sinh Vien Thuoc Mot Khoa Do Nguoi Dung Nhap Vao
+        case '6': {
+            system("cls");
+            char makhoa[max];
+            cout << "\nNhap Ma khoa : ";
+            fflush(stdin);
+            cin.getline(makhoa, max);
+            timsv1khoa(lsv, makhoa, lk);
+            cout << "\nPhim bat ky de ve MENU.";
+            getch();
+            break;
+        }
+        }
+    } while (luachon != 0);
+}
+int main()
+{
+    while (true)
+    {
+        menu();
+        getch();
+    }
+    return 0;
+}
