@@ -1,0 +1,181 @@
+#include<fstream>
+#include<iostream>
+#include<string.h>
+using namespace std;
+// struct hoa don 
+struct hoadon
+{
+    string tensanpham;
+    string nhomsanpham;
+    string masanpham;
+    float giasanpham; 
+    string loaisanpham; // c? ho?c m?i
+    int soluong;
+}
+// khai bao Node hoa don 
+struct NodeHoaDon
+{
+    NodeHoaDon data;
+    NodeHoaDon *next;
+    NodeHoaDon *prev;
+}
+// khai bao list hoa don 
+struct ListHoaDon
+{
+    NodeHoaDon* lHead;
+    NodeHoaDon* lTail;
+}
+// ham kiem tra rong isEmpty 
+bool kiemtrarong(ListHoaDon L)
+{
+    if(L.lHead == NULL)
+    { 
+         cout<<"\nDanh sach khong co phan tu nao !>;
+         return true;
+    } 
+    return false;
+}
+// ham Init lay thong tin tu file 
+void Init()
+{
+	ifstream filehoadon("xxx.txt",ios::MODE) // chua su ly, tam thoi de vay ! 
+}
+// tao 1 nodehoadon tu 1 data 
+NodeHoaDon* creNodeHoaDon(hoadon a) 
+{
+    NodeHoaDon *x= new NodeHoaDon ;
+    if(x==NULL)exit(1);// kh ðc c?p phát b? nh? ;
+    x->data=a;
+    x->next=NULL;
+    x->prev=NULL
+    return x;
+}
+// them node vao cuoi danh sach 
+AddTail(ListHoaDon L, hoadon a)
+{
+ NodeHoaDon* x =  creNodeHoaDon(a); 
+	if (L.lHead == NULL)
+	{
+		L.lHead = L.lTail = x;
+
+	}
+	else {
+		L.lTail->next = x;
+		x->prev = L.lTail;
+		L.lTail = x;
+
+	}
+}
+// thong tin dau vao 1 hoa don 
+void InputNodeNodeHoadon(hoadon x)
+{
+    // lay ra tu file 
+}
+// xuat thong tin 1 node hoa don 
+void OutputNodeHoadon(hoadon x)
+{
+    cout<<"\nTen sp " <<x->data.tensanpham<<"\nMa san pham"<<x->data.masanpham<<"\nNhom san pham"
+    <<x->data.nhomsanpham<<"\nLoai san pham " <<x->data.loaisanpham <<"\nGia san pham "<<x->data.giasanpham
+    <<"\nGia san pham "<<x->data.giasanpham<<"\nSo Luong "<<x->data.soluong;
+
+}
+float TinhTien1SanPham(x)
+{
+    float gia;
+    gia=x->data.soluong*x->data.giasanpham;
+    setprecision(gia,3);// lay 3 so sau dau cham  // ham set quen cach viet tu tu sua lai 
+    return gia; 
+}
+// xuat thong tin list hoa don 
+void OutputListHoadon(ListHoaDon L)
+{
+    if(L.lHead==NULL) cout<<"\nList hoa don trong !";
+    NodeHoaDon *x= new NodeHoaDon;
+    float tonghoadon;
+    for(x=L.lHead;x!=NULL;x=x->next)
+    {
+        cout<<"\nThong tin hoa don :" ;
+        OutputNodeNodeHoadon(x);
+        tonghoadon+=TinhTien1SanPham(x);
+    }
+    cout<<"\nTong Hoa Don : "<<setprecision(tonghoadon,3);
+}
+// xoa cuoi danh sach 
+void XoaCuoiDanhSachDanhSach(ListHoaDon &L)
+{
+	if (L.lHead == NULL)
+	{
+		cout << "\nKhong co phan tu nao trong danh sach, khong the xoa.";
+        exit(1);
+	}
+	L.lTail = L.lTail->prev;
+	L.lTail->next = NULL;	
+}
+// xoa dau danh sach 
+void XoaDauDanhSach(ListHoaDon &L)
+{
+    	if (L.lHead == NULL)
+	{
+		cout << "\nKhong co phan tu nao trong danh sach, khong the xoa.";
+        exit(1);
+	}
+    L.lHead=L.lHead->next;
+    L.lHead->prev=NULL;
+}
+// xoa node bat ky // bao gom ca xoa dau va cuoi 
+void XoanodeHoaDonOGiua(ListHoaDon &L, int vitri)
+{
+    	if (L.lHead == NULL)
+	{
+		cout << "\nKhong co phan tu nao trong danh sach, khong the xoa.";
+       // exit(1);
+	}
+    NodeHoaDon *CurrentNode = new NodeHoaDon;
+    NodeHoaDon *CurrentNode = new NodeHoaDon;
+    x=L.lHead;
+    cout<<"\nNhap phan tu muoun xoa :";
+    cin>>vitri;
+    for(size_t i=1;i<vitri;i++)
+    {
+        if(x==NULL)
+        {
+            cout<<"\nPhan tu khong ton tai ! "; break;
+        }
+        x=x->next;
+    }
+    while(vitri ==1 || x->prev==NULL)
+    {
+        XoaDauDanhSach(L); // neu vi tri la 1 thi xoa dau
+    }
+    while(x->next==NULL)
+    {
+        XoaCuoiDanhSachDanhSach(L); // vi tri la cuoi thi xoa cuoi 
+    }
+    int dem = 0;
+    for(x;x!=NULL;x=x->next)
+    {
+        ++dem;
+        if(dem = vitri)
+        {
+            CurrentNode = x;
+            CurrentNode->prev->next = x-> next;// coppy nen chua hieu
+            CurrentNode->next->prev = x->prev;// same
+            delete(x); // xoa va giai phong bo nho 
+        }
+    }
+}
+// lay thong tin thoi gian mua hang tung hoa don 
+void InitThoigian()
+{
+	ifstream filethoigian("abc.txt",ios::MODE) // tam thoi de vay 
+}
+// ham so sanh thoi gian 
+void sosanhthoigian(thoigian x,thoigian y) 
+{
+
+}
+// sap xep hoa don theo thoi gian
+void SapXepHoaDonTheoThoiGian(Listhoadon &L)
+{
+	
+}
